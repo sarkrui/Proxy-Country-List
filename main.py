@@ -2,6 +2,7 @@ import requests
 from geoip2.database import Reader
 import os
 import subprocess
+from collections import OrderedDict
 
 
 # Path to GeoLite2-Country.mmdb database file
@@ -84,6 +85,9 @@ def check_proxies(filtered_proxies, repo_name, source):
 
         # Filter out lines containing the error
         lines = [line for line in lines if 'socks5://error code: 1015' not in line]
+
+        # Remove duplicate lines while preserving order
+        lines = list(OrderedDict.fromkeys(lines))
 
         # Write the filtered lines back to the file
         with open(output_filename, 'w') as f:

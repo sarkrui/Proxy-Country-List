@@ -26,11 +26,11 @@ jobs:
         python main.py
     - name: Commit files
       run: |
-        git config --local user.email ${{ secrets.GH_EMAIL }}
-        git config --local user.name ${{ secrets.GH_NAME }}
+        git config --local user.email ${{ env.GH_EMAIL }}
+        git config --local user.name ${{ env.GH_NAME }}
         git add -A
         git commit -m "Updated Proxies" || exit 0 
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GH_TOKEN }}
+        github_token: ${{ env.GH_TOKEN }}

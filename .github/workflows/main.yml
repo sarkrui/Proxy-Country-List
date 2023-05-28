@@ -29,7 +29,11 @@ jobs:
     - name: Execute script
       run: python main.py
 
+    - name: Remove the tar.gz file
+      run:
+        rm proxy-check.tar.gz
+
     - name: Commit
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: Update proxies_{country}.txt
+        commit_message: Update proxy lists

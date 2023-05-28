@@ -24,7 +24,7 @@ jobs:
     - name: Download Proxy Check
       run:
         curl -s -L https://github.com/mmpx12/proxy-check/releases/download/v1.1.1/proxy-check-v1.1.1-linux-amd64.tar.gz -o proxy-check.tar.gz &&
-        tar xvf proxy-check.tar.gz -C proxy-check
+        tar xvf proxy-check.tar.gz
         
     - name: Execute script
       run: python main.py

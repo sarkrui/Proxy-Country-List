@@ -54,7 +54,21 @@ def check_proxies(filtered_proxies, repo_name):
         filename = f'{repo_name}/socks5/socks5_{country_code.lower()}.txt'
         output_filename = f'{valid_dir}/valid_socks5_{country_code.lower()}.txt'
         
-        subprocess.run(['./proxy-check', '-r', '-m', '50', '--socks5', '-o', output_filename, '-g', filename])
+        subprocess.run(['./proxy-check', '-r', '-m', '100', '--socks5', '-o', output_filename, '-g', filename])
+
+        # Open the file and remove the lines with errors
+        with open(output_filename, 'r') as f:
+            lines = f.readlines()
+            
+        # Replace 'error code: 1015' with 'error code: 1015\n' to add a return mark
+        lines = [line.replace('error code: 1015', 'error code: 1015\n') for line in lines]
+
+        # Filter out lines containing the error
+        lines = [line for line in lines if 'socks5://error code: 1015' not in line]
+
+        # Write the filtered lines back to the file
+        with open(output_filename, 'w') as f:
+            f.writelines(lines)
 
 def main():
     repo_sources = [

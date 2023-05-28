@@ -22,15 +22,9 @@ jobs:
       run: |
         curl -s -L https://git.io/GeoLite2-Country.mmdb
     - name: Execute script
-      run: |
-        python main.py
-    - name: Commit files
-      run: |
-        git config --local user.email ${{ env.GH_EMAIL }}
-        git config --local user.name ${{ env.GH_NAME }}
-        git add -A
-        git commit -m "Updated Proxies" || exit 0 
-    - name: Push changes
-      uses: ad-m/github-push-action@master
+      run: python main.py
+
+    - name: Commit
+      uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        github_token: ${{ env.GH_TOKEN }}
+        commit_message: Update proxies_{country}.txt

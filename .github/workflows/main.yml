@@ -19,18 +19,17 @@ jobs:
         pip install requests geoip2
     - name: Download GeoLite2 Database
       run: |
-        curl -s -L https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=${{ secrets.GEOIP_LICENSE_KEY }}&suffix=tar.gz | tar -xz --strip-components 1 --wildcards '*.mmdb'
+        curl -s -L https://git.io/GeoLite2-Country.mmdb
     - name: Execute script
       run: |
-        curl -s -L ${{ secrets.SCRIPT_URL }} -o update_proxies.py
-        python update_proxies.py
+        python main.py
     - name: Commit files
       run: |
-        git config --local user.email ${{ secrets.GIT_EMAIL }}
-        git config --local user.name ${{ secrets.GIT_NAME }}
+        git config --local user.email ${{ secrets.GH_EMAIL }}
+        git config --local user.name ${{ secrets.GH_NAME }}
         git add -A
         git commit -m "Updated Proxies" || exit 0 
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GH_TOKEN }}

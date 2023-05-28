@@ -1,6 +1,7 @@
 name: PROXY Updater
 
 on:
+  workflow_dispatch: # Enable manual trigger
   schedule:
     - cron: '0 */2 * * *'
 

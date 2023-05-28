@@ -14,11 +14,13 @@ def get_country(ip_address, reader):
     except:
         return None
 
-def get_socks5_proxies():
-    url = "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks5.txt"
-    response = requests.get(url)
-    data = response.text
-    return data.splitlines()
+def get_socks5_proxies(repo_urls):
+    proxies = []
+    for url in repo_urls:
+        response = requests.get(url)
+        data = response.text
+        proxies.extend(data.splitlines())
+    return proxies
 
 def filter_by_country(proxies):
     reader = Reader(path_to_db)
@@ -35,8 +37,8 @@ def filter_by_country(proxies):
 
     return filtered_proxies
 
-def save_proxies(filtered_proxies):
-    socks5_dir = 'socks5'
+def save_proxies(filtered_proxies, repo_name):
+    socks5_dir = f'{repo_name}/socks5'
     os.makedirs(socks5_dir, exist_ok=True)
 
     for country_code, proxies in filtered_proxies.items():
@@ -44,22 +46,34 @@ def save_proxies(filtered_proxies):
             for proxy in proxies:
                 f.write(proxy + '\n')
 
-def check_proxies(filtered_proxies):
-    valid_dir = 'valid'
+def check_proxies(filtered_proxies, repo_name):
+    valid_dir = f'{repo_name}/valid'
     os.makedirs(valid_dir, exist_ok=True)
 
     for country_code in filtered_proxies.keys():
-        filename = f'socks5/socks5_{country_code.lower()}.txt'
+        filename = f'{repo_name}/socks5/socks5_{country_code.lower()}.txt'
         output_filename = f'{valid_dir}/valid_socks5_{country_code.lower()}.txt'
         
-        subprocess.run(['./proxy-check', '-r', '-m', '30', '--socks5', '-o', output_filename, '-g', filename])
-
+        subprocess.run(['./proxy-check', '-r', '-m', '50', '--socks5', '-o', output_filename, '-g', filename])
 
 def main():
-    proxies = get_socks5_proxies()
-    filtered_proxies = filter_by_country(proxies)
-    save_proxies(filtered_proxies)
-    check_proxies(filtered_proxies)
-    
+    repo_sources = [
+        {
+            'name': 'hookzof',
+            'urls': ['https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt']
+        },
+        {
+            'name': 'TheSpeedX',
+            'urls': ['https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks5.txt']
+        },
+        # Add more sources as needed
+    ]
+
+    for source in repo_sources:
+        proxies = get_socks5_proxies(source['urls'])
+        filtered_proxies = filter_by_country(proxies)
+        save_proxies(filtered_proxies, source['name'])
+        check_proxies(filtered_proxies, source['name'])
+
 if __name__ == '__main__':
     main()

@@ -21,6 +21,11 @@ jobs:
     - name: Download GeoLite2 Database
       run:
         curl -s -L https://git.io/GeoLite2-Country.mmdb -o GeoLite2-Country.mmdb
+    - name: Download Proxy Check
+      run:
+        curl -s -L https://github.com/mmpx12/proxy-check/releases/download/v1.1.1/proxy-check-v1.1.1-linux-amd64.tar.gz -o proxy-check.tar.gz
+        tar xvf proxy-check.tar.gz -C proxy-check
+        
     - name: Execute script
       run: python main.py
 
